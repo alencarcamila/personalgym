@@ -832,7 +832,7 @@ export default function FitnessApp() {
                 <GymLogo size={40}/>
                 <div>
                   <div className="text-sm" style={{color:"#64748b"}}>Bem-vindo de volta</div>
-                  <h1 className="text-xl font-bold text-white">Atleta</h1>
+                  <h1 className="text-xl font-bold text-white">Alencar</h1>
                 </div>
               </div>
               <div className="text-center">
