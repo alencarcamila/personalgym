@@ -10,101 +10,125 @@ import { useState, useEffect, useRef } from "react";
   document.head.appendChild(link);
 })();
 
-// ─── VÍDEOS ───────────────────────────────────────────────────────────────────
+// ─── VÍDEOS — revisados e verificados ────────────────────────────────────────
 const EXERCISE_VIDEOS = {
+  // Costas
   "Barra Assistida":               "https://www.youtube.com/embed/sIvJTfGxdFo?rel=0",
-  "Remada Curvada com Barra":      "https://www.youtube.com/embed/FWJR5Ve8bnQ?rel=0",
   "Puxada Alta Pegada Fechada":    "https://www.youtube.com/embed/CAwf7n6Luuc?rel=0",
+  "Puxada Alta Aberta":            "https://www.youtube.com/embed/eGo4IYlbE5g?rel=0",
+  "Remada Curvada com Barra":      "https://www.youtube.com/embed/FWJR5Ve8bnQ?rel=0",
   "Remada Baixa Neutra":           "https://www.youtube.com/embed/GZbfZ033f74?rel=0",
-  "Elevação Lateral com Halteres": "https://www.youtube.com/embed/3VcKaXpzqRo?rel=0",
-  "Elevação Frontal":              "https://www.youtube.com/embed/gkAT1yAs_Gs?rel=0",
-  "Agachamento Livre":             "https://www.youtube.com/embed/ultWZbUMPL8?rel=0",
-  "Hack Machine":                  "https://www.youtube.com/embed/EdtPqHVhUms?rel=0",
-  "Leg Press 45°":                 "https://www.youtube.com/embed/IZxyjW7MPJQ?rel=0",
-  "Cadeira Extensora":             "https://www.youtube.com/embed/YyvSfVjQeL0?rel=0",
-  "Leg Press Unilateral":          "https://www.youtube.com/embed/vRLxDqFjkpA?rel=0",
-  "Puxada Alta Aberta":            "https://www.youtube.com/embed/0X9OtBBGJNE?rel=0",
-  "Remada Baixa Aberta":           "https://www.youtube.com/embed/GZbfZ033f74?rel=0",
-  "Pulldown Reto":                 "https://www.youtube.com/embed/lueEJGjTuPQ?rel=0",
+  "Remada Baixa Aberta":           "https://www.youtube.com/embed/UCXxvVItLoM?rel=0",
+  "Remada Unilateral":             "https://www.youtube.com/embed/roCP5O-K4-M?rel=0",
+  // Ombro
   "Face Pull":                     "https://www.youtube.com/embed/rep-qVOkqgk?rel=0",
   "Crucifixo Inverso":             "https://www.youtube.com/embed/k9M3HxGCiSs?rel=0",
-  "Remada Unilateral":             "https://www.youtube.com/embed/roCP5O-K4-M?rel=0",
   "Desenvolvimento com Halteres":  "https://www.youtube.com/embed/qEwKCR5JCog?rel=0",
+  "Elevação Lateral com Halteres": "https://www.youtube.com/embed/3VcKaXpzqRo?rel=0",
   "Elevação Lateral Cabo":         "https://www.youtube.com/embed/PPF1bnahxNE?rel=0",
-  "Pullover":                      "https://www.youtube.com/embed/lEJJ5OA7Zcw?rel=0",
+  // Peito
+  "Supino Reto":                   "https://www.youtube.com/embed/rT7DgCr-3pg?rel=0",
+  "Crucifixo com Halteres":        "https://www.youtube.com/embed/eozdVDA78K0?rel=0",
+  // Tríceps
+  "Tríceps Corda":                 "https://www.youtube.com/embed/kiuVA0gs3EI?rel=0",
+  "Tríceps na Barra":              "https://www.youtube.com/embed/2z8JmcrW-As?rel=0",
+  // Pernas
+  "Agachamento Livre":             "https://www.youtube.com/embed/ultWZbUMPL8?rel=0",
+  "Leg Press 45°":                 "https://www.youtube.com/embed/IZxyjW7MPJQ?rel=0",
+  "Stiff com Halteres":            "https://www.youtube.com/embed/1uDiW5--rAE?rel=0",
+  "Elevação Pélvica":              "https://www.youtube.com/embed/SEdqd1n0cvg?rel=0",
+  "Cadeira Extensora":             "https://www.youtube.com/embed/YyvSfVjQeL0?rel=0",
+  // Cardio
   "Spinning":                      "https://www.youtube.com/embed/2OByMfGbBpU?rel=0",
   "Corrida":                       "https://www.youtube.com/embed/kVnyY17VS9Y?rel=0",
+  "Escada":                        "https://www.youtube.com/embed/HtJEuHrE5O4?rel=0",
   "Escada + Caminhada Inclinada":  "https://www.youtube.com/embed/HtJEuHrE5O4?rel=0",
 };
 
 // ─── TREINOS ──────────────────────────────────────────────────────────────────
-// Cardio é um exercício especial (isCardio:true) — aparece como série, obrigatório para finalizar
 const WORKOUTS = [
   {
-    id:1, shortName:"Treino 1", tag:"Costas",
-    name:"Treino 1 – Costas + Ombro Lateral + Corrida",
+    id:1, shortName:"Treino 1", tag:"Costas + Peito",
+    name:"Treino 1 – Costas + Peito + Ombro",
     exercises:[
-      {id:"e1",  name:"Barra Assistida",              sets:4, repsMin:8,  repsMax:10, muscle:"Costas", secondary:["Bíceps"],                tips:"Mantenha escápulas retraídas",              errors:"Não usar momentum ou balanço",           description:"Tração na barra com assistência de contrapeso."},
-      {id:"e2",  name:"Remada Curvada com Barra",     sets:4, repsMin:8,  repsMax:10, muscle:"Costas", secondary:["Bíceps","Core"],          tips:"Tronco a 45°, cotovelos próximos ao corpo", errors:"Não arquear excessivamente a lombar",     description:"Remada inclinada com barra livre."},
-      {id:"e3",  name:"Puxada Alta Pegada Fechada",   sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps"],                tips:"Traga a barra até o queixo",                errors:"Não inclinar demais o tronco",            description:"Puxada com pegada supinada fechada."},
-      {id:"e4",  name:"Remada Baixa Neutra",          sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps","Core"],          tips:"Cotovelos a 45° do tronco, aperte no pico", errors:"Não arredondar as costas",                description:"Remada na polia baixa com pegada neutra."},
-      {id:"e5",  name:"Elevação Lateral com Halteres",sets:4, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],              tips:"Cotovelo levemente dobrado, polegar para baixo", errors:"Não usar impulso do quadril",          description:"Elevação lateral para deltoides medial."},
-      {id:"ec1", name:"Corrida",                      sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas"],                tips:"Passada natural, respire pelo nariz",        errors:"Não inclinar para frente em excesso",     description:"Corrida 1 km — registre a distância ou tempo.", isCardio:true},
+      // POLIA ALTA — troca só o grip, sem sair do aparelho
+      {id:"e1",  name:"Barra Assistida",              sets:3, repsMin:6,  repsMax:8,  muscle:"Costas", secondary:["Bíceps"],             tips:"Escápulas retraídas, desça com controle total", errors:"Não usar balanço ou momentum do corpo",      description:"Tração na barra com assistência de contrapeso. Composto mais importante para costas."},
+      {id:"e2",  name:"Puxada Alta Pegada Fechada",   sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps"],             tips:"Traga a barra até o queixo, cotovelos para baixo", errors:"Não inclinar demais o tronco para trás",  description:"Puxada na polia alta com pegada supinada fechada. Ênfase na parte inferior do dorsal."},
+      {id:"e3",  name:"Puxada Alta Aberta",           sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps"],             tips:"Pegada pronada larga, puxe até o queixo",       errors:"Não deixar os ombros subirem em direção às orelhas", description:"Troca o grip no mesmo aparelho. Ênfase na largura do dorsal."},
+      // BARRA LIVRE
+      {id:"e4",  name:"Remada Curvada com Barra",     sets:3, repsMin:8,  repsMax:10, muscle:"Costas", secondary:["Bíceps","Core"],      tips:"Tronco a 45°, cotovelos próximos ao corpo, aperte as escápulas no pico", errors:"Não arquear excessivamente a lombar", description:"Remada inclinada com barra livre. Um dos melhores para espessamento das costas."},
+      // BANCO — peito e ombro no final
+      {id:"e5",  name:"Supino Reto",                  sets:3, repsMin:10, repsMax:12, muscle:"Peito",  secondary:["Tríceps","Ombro"],    tips:"Desça a barra/halteres até o peito, cotovelos a 45°", errors:"Não travar os cotovelos na extensão, não arquear demais", description:"Supino reto com barra ou halteres — use o que estiver disponível. Composto básico de peito."},
+      {id:"e6",  name:"Elevação Lateral com Halteres",sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],           tips:"Cotovelo levemente dobrado, polegar levemente para baixo", errors:"Não usar impulso do quadril para subir o peso", description:"Isolado para deltoides medial. Sempre o último para não pré-exaurir."},
+      {id:"ec1", name:"Corrida",                      sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas"],             tips:"Passada natural, respire pelo nariz",            errors:"Não inclinar para frente em excesso",         description:"Corrida 1 km — registre o tempo ou distância.", isCardio:true},
     ],
   },
   {
     id:2, shortName:"Treino 2", tag:"Pernas",
-    name:"Treino 2 – Pernas + Escada",
+    name:"Treino 2 – Pernas Completo",
     exercises:[
-      {id:"e6",  name:"Agachamento Livre",            sets:4, repsMin:6,  repsMax:8,  muscle:"Pernas", secondary:["Glúteos","Core"],         tips:"Joelhos alinhados, desça até 90°",           errors:"Joelhos não colabarem para dentro",       description:"Agachamento com barra livre nas costas."},
-      {id:"e7",  name:"Hack Machine",                 sets:3, repsMin:8,  repsMax:10, muscle:"Pernas", secondary:["Glúteos"],               tips:"Costas coladas, pés na largura dos ombros",  errors:"Não travar os joelhos na extensão",       description:"Agachamento na hack machine."},
-      {id:"e8",  name:"Leg Press 45°",               sets:4, repsMin:10, repsMax:12, muscle:"Pernas", secondary:["Glúteos"],               tips:"Desça até 90°, nunca trave os joelhos",      errors:"Não deixar o lombar descolar do banco",   description:"Leg press inclinado 45 graus."},
-      {id:"e9",  name:"Cadeira Extensora",            sets:4, repsMin:12, repsMax:15, muscle:"Pernas", secondary:[],                        tips:"Extensão completa, desça lentamente",         errors:"Não usar impulso para subir",             description:"Extensão de joelhos na cadeira."},
-      {id:"e10", name:"Leg Press Unilateral",         sets:3, repsMin:10, repsMax:10, muscle:"Pernas", secondary:["Glúteos"],               tips:"Mantenha o quadril nivelado",                errors:"Não rotacionar o quadril",                description:"Leg press com uma perna de cada vez."},
-      {id:"ec2", name:"Escada",                       sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas","Glúteos"],      tips:"Postura ereta, use o calcanhar ao subir",    errors:"Não se apoiar no corrimão",               description:"Escada 5-8 min — registre o tempo.", isCardio:true},
+      // COMPOSTOS PESADOS PRIMEIRO
+      {id:"e7",  name:"Agachamento Livre",            sets:3, repsMin:6,  repsMax:8,  muscle:"Pernas", secondary:["Glúteos","Core"],     tips:"Joelhos alinhados com os pés, desça até 90°, peito aberto", errors:"Joelhos não colabarem para dentro, não arredondar a lombar", description:"Rei dos exercícios de pernas. Trabalha quad, glúteo e core ao mesmo tempo."},
+      {id:"e8",  name:"Leg Press 45°",               sets:3, repsMin:10, repsMax:12, muscle:"Pernas", secondary:["Glúteos"],            tips:"Desça até 90°, nunca trave os joelhos na extensão", errors:"Não deixar o lombar descolar do banco",     description:"Permite trabalhar com cargas altas com segurança. Pés paralelos na largura dos ombros."},
+      // POSTERIOR E GLÚTEO — halteres, ficam juntos
+      {id:"e9",  name:"Stiff com Halteres",           sets:3, repsMin:10, repsMax:12, muscle:"Posterior", secondary:["Glúteos"],         tips:"Joelhos levemente flexionados, empurre o quadril para trás, costas neutras", errors:"Não arredondar a lombar, não dobrar demais os joelhos", description:"Isolamento do isquiotibial e glúteo. Segure o haltere próximo às pernas."},
+      {id:"e10", name:"Elevação Pélvica",             sets:3, repsMin:12, repsMax:15, muscle:"Glúteos", secondary:["Posterior"],         tips:"Apoie a escápula no banco, empurre o quadril para cima até ficar paralelo ao chão", errors:"Não hiperstender a lombar no topo, não deixar os joelhos fecharem", description:"Melhor exercício de isolamento para glúteo. Pode usar barra ou haltere no quadril."},
+      // ISOLADOS NO FINAL
+      {id:"e11", name:"Cadeira Extensora",            sets:3, repsMin:12, repsMax:15, muscle:"Pernas", secondary:[],                    tips:"Extensão completa no topo, desça de forma lenta e controlada (3 segundos)", errors:"Não usar impulso para subir o peso",       description:"Isolamento do quadríceps. Finalizador — sempre por último."},
+      {id:"ec2", name:"Escada",                       sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas","Glúteos"],  tips:"Postura ereta, use o calcanhar ao subir",       errors:"Não se apoiar no corrimão",                   description:"Escada 5-8 min — registre o tempo.", isCardio:true},
     ],
   },
   {
-    id:3, shortName:"Treino 3", tag:"Costas",
-    name:"Treino 3 – Costas + Ombro Posterior + Escada",
+    id:3, shortName:"Treino 3", tag:"Costas + Ombro Post.",
+    name:"Treino 3 – Costas + Ombro Posterior + Tríceps",
     exercises:[
-      {id:"e11", name:"Puxada Alta Aberta",           sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps"],                tips:"Pegada larga, puxe até o queixo",            errors:"Não deixar os ombros subirem",            description:"Puxada com pegada aberta na barra alta."},
-      {id:"e12", name:"Remada Baixa Aberta",          sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps"],                tips:"Cotovelos abertos a 90°",                    errors:"Não usar impulso do tronco",              description:"Remada na polia baixa com pegada aberta."},
-      {id:"e13", name:"Pulldown Reto",                sets:3, repsMin:12, repsMax:15, muscle:"Costas", secondary:["Tríceps"],               tips:"Traga até a coxa, braços semiflexionados",   errors:"Não dobrar demais os cotovelos",          description:"Pulldown reto com barra ou corda."},
-      {id:"e14", name:"Face Pull",                    sets:4, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio","Manguito"],   tips:"Puxe para o rosto, cotovelos acima dos ombros", errors:"Não abaixar os cotovelos",             description:"Face pull para ombro posterior e manguito."},
-      {id:"e15", name:"Crucifixo Inverso",            sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],              tips:"Tronco paralelo ao chão, braços semiflexionados", errors:"Não usar balanço das costas",        description:"Crucifixo inverso para deltoides posterior."},
-      {id:"e24", name:"Elevação Frontal",             sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],              tips:"Braços semiflexionados, suba até a altura dos ombros", errors:"Não usar balanço do tronco",      description:"Elevação frontal com halteres ou barra para deltoides anterior."},
-      {id:"ec3", name:"Escada",                       sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas"],               tips:"Postura ereta ao subir",                     errors:"Não apoiar no corrimão",                  description:"Escada 8-12 min — registre o tempo.", isCardio:true},
+      // POLIA BAIXA — troca só o acessório
+      {id:"e12", name:"Remada Baixa Neutra",          sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps"],             tips:"Cotovelos a 45° do tronco, aperte as escápulas no pico da contração", errors:"Não arredondar as costas, não usar impulso do tronco", description:"Remada na polia baixa com triângulo neutro. Ênfase no espessamento do dorsal médio."},
+      {id:"e13", name:"Remada Baixa Aberta",          sets:3, repsMin:10, repsMax:12, muscle:"Costas", secondary:["Bíceps","Trapézio"],  tips:"Cotovelos abertos a 90°, retração escapular no pico", errors:"Não usar impulso do tronco para puxar",     description:"Troca o acessório no mesmo aparelho. Ênfase no trapézio médio e romboides."},
+      // POLIA ALTA — troca acessório
+      {id:"e14", name:"Face Pull",                    sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio","Manguito"],tips:"Puxe para o rosto, cotovelos na altura dos ombros ou acima", errors:"Não abaixar os cotovelos durante o movimento", description:"Fundamental para saúde do ombro. Fortalece manguito e deltoides posterior."},
+      {id:"e15", name:"Tríceps Corda",                sets:3, repsMin:12, repsMax:15, muscle:"Tríceps",secondary:["Ombro"],             tips:"Separe a corda no final do movimento, cotovelos fixos ao lado do corpo", errors:"Não abrir os cotovelos, não usar impulso do tronco", description:"Isolamento do tríceps na polia alta com corda. Mesmo aparelho do Face Pull."},
+      // HALTERES — ficam juntos
+      {id:"e16", name:"Crucifixo Inverso",            sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],           tips:"Tronco paralelo ao chão, braços semiflexionados, movimento controlado", errors:"Não usar balanço das costas para levantar o peso", description:"Ênfase no deltoides posterior. Pode ser feito em pé inclinado ou no banco."},
+      {id:"e17", name:"Elevação Lateral com Halteres",sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],           tips:"Cotovelo levemente dobrado, polegar para baixo no topo", errors:"Não usar impulso do quadril",               description:"Isolado para deltoides medial. Mesmo haltere do crucifixo."},
+      {id:"ec3", name:"Escada",                       sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas"],             tips:"Postura ereta ao subir, passos firmes",          errors:"Não apoiar no corrimão",                       description:"Escada 8-12 min — registre o tempo.", isCardio:true},
     ],
   },
   {
-    id:4, shortName:"Treino 4", tag:"Costas",
-    name:"Treino 4 – Costas + Ombro Completo + Cardio",
+    id:4, shortName:"Treino 4", tag:"Costas + Peito + Ombro",
+    name:"Treino 4 – Costas + Ombro Completo + Peito + Tríceps",
     exercises:[
-      {id:"e16", name:"Barra Assistida",              sets:4, repsMin:6,  repsMax:8,  muscle:"Costas", secondary:["Bíceps"],                tips:"Controle total na descida",                  errors:"Não usar balanço",                        description:"Tração na barra com assistência."},
-      {id:"e17", name:"Remada Unilateral",            sets:3, repsMin:8,  repsMax:8,  muscle:"Costas", secondary:["Bíceps","Core"],          tips:"Quadril nivelado, costas neutras",            errors:"Não rotacionar o tronco em excesso",      description:"Remada com haltere apoiado no banco."},
-      {id:"e18", name:"Desenvolvimento com Halteres", sets:3, repsMin:8,  repsMax:10, muscle:"Ombro",  secondary:["Tríceps","Trapézio"],    tips:"Cotovelos a 90° no início",                  errors:"Não arquear a lombar",                    description:"Desenvolvimento de ombros com halteres."},
-      {id:"e19", name:"Elevação Lateral Cabo",        sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:[],                        tips:"Tensão constante, movimento lento",           errors:"Não levantar o ombro junto",              description:"Elevação lateral no cabo para deltoides medial."},
-      {id:"e20", name:"Pullover",                     sets:3, repsMin:12, repsMax:15, muscle:"Costas", secondary:["Peito","Tríceps"],       tips:"Braços semiflexionados, arco amplo",          errors:"Não dobrar demais os cotovelos",          description:"Pullover com halter no banco."},
-      {id:"ec4", name:"Corrida ou Spinning",          sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas"],               tips:"Mantenha ritmo constante",                   errors:"Não começar muito forte",                 description:"Corrida ou Spinning — registre o tempo ou distância.", isCardio:true},
+      // BARRA — composto mais pesado primeiro
+      {id:"e18", name:"Barra Assistida",              sets:3, repsMin:6,  repsMax:8,  muscle:"Costas", secondary:["Bíceps"],             tips:"Controle total na descida, escápulas retraídas", errors:"Não usar balanço ou momentum",               description:"Tração na barra com assistência. Neste treino foco em força — menos reps, mais controle."},
+      // BANCO + HALTERES — sequência completa sem sair do banco
+      {id:"e19", name:"Remada Unilateral",            sets:3, repsMin:8,  repsMax:10, muscle:"Costas", secondary:["Bíceps","Core"],      tips:"Quadril nivelado, costas neutras, cotovelo próximo ao corpo", errors:"Não rotacionar o tronco em excesso",    description:"Remada com haltere apoiado no banco. Amplitude maior e correção de assimetrias."},
+      {id:"e20", name:"Desenvolvimento com Halteres", sets:3, repsMin:8,  repsMax:10, muscle:"Ombro",  secondary:["Tríceps","Trapézio"], tips:"Cotovelos a 90° no início, empurre direto para cima", errors:"Não arquear a lombar para ganhar impulso", description:"Composto de ombro. Mesmo banco da remada unilateral."},
+      {id:"e21", name:"Supino Reto",                  sets:3, repsMin:10, repsMax:12, muscle:"Peito",  secondary:["Tríceps","Ombro"],    tips:"Desça até o peito, cotovelos a 45°, controle na descida", errors:"Não travar cotovelos, não tirar os pés do chão", description:"Supino reto com barra ou halteres. Mesmo banco."},
+      {id:"e22", name:"Crucifixo com Halteres",       sets:3, repsMin:12, repsMax:15, muscle:"Peito",  secondary:["Ombro"],             tips:"Braços levemente flexionados, abra até sentir o alongamento no peito", errors:"Não descer demais para não lesionar o ombro", description:"Isolamento do peito. Mesmo banco e halteres."},
+      {id:"e23", name:"Tríceps na Barra",             sets:3, repsMin:10, repsMax:12, muscle:"Tríceps",secondary:[],                    tips:"Cotovelos fixos, desça até 90°, extensão completa no topo", errors:"Não afastar os cotovelos durante o movimento", description:"Tríceps no banco ou paralela com barra. Finalizador de tríceps."},
+      {id:"e24", name:"Elevação Lateral Cabo",        sets:3, repsMin:12, repsMax:15, muscle:"Ombro",  secondary:["Trapézio"],           tips:"Tensão constante no cabo, movimento lento e controlado", errors:"Não levantar o ombro junto com o braço",   description:"Isolado deltoides medial na polia. Mantém tensão constante ao longo do movimento."},
+      {id:"ec4", name:"Corrida ou Spinning",          sets:1, repsMin:1,  repsMax:1,  muscle:"Cardio", secondary:["Pernas"],             tips:"Mantenha ritmo constante, respire de forma controlada", errors:"Não começar muito forte",                  description:"Corrida ou Spinning — registre o tempo ou distância.", isCardio:true},
     ],
   },
   {
     id:5, shortName:"Treino 5", tag:"Cardio",
     name:"Treino 5 – Cardio Inteligente",
     exercises:[
-      {id:"e21", name:"Spinning",                     sets:1, repsMin:40, repsMax:40, muscle:"Cardio", secondary:["Pernas"],               tips:"Cadência constante 80-100 RPM",              errors:"Não pedalar com joelhos para dentro",     description:"Ciclismo indoor de alta intensidade — duração em minutos.", isCardio:true},
-      {id:"e22", name:"Corrida",                      sets:1, repsMin:3,  repsMax:5,  muscle:"Cardio", secondary:["Pernas","Core"],         tips:"Passada natural, respire pelo nariz",         errors:"Não inclinar excessivamente para frente",  description:"Corrida em esteira ou ao ar livre — distância em km.", isCardio:true},
-      {id:"e23", name:"Escada + Caminhada Inclinada", sets:1, repsMin:20, repsMax:30, muscle:"Cardio", secondary:["Pernas","Glúteos"],      tips:"Postura ereta, use o calcanhar",             errors:"Não se apoiar no corrimão",               description:"Subida de escadas + caminhada inclinada — duração em minutos.", isCardio:true},
+      {id:"e25", name:"Spinning",                     sets:1, repsMin:40, repsMax:40, muscle:"Cardio", secondary:["Pernas"],             tips:"Cadência constante 80-100 RPM",                  errors:"Não pedalar com joelhos para dentro",         description:"Ciclismo indoor de alta intensidade — duração em minutos.", isCardio:true},
+      {id:"e26", name:"Corrida",                      sets:1, repsMin:3,  repsMax:5,  muscle:"Cardio", secondary:["Pernas","Core"],      tips:"Passada natural, respire pelo nariz",             errors:"Não inclinar excessivamente para frente",      description:"Corrida em esteira ou ao ar livre — distância em km.", isCardio:true},
+      {id:"e27", name:"Escada + Caminhada Inclinada", sets:1, repsMin:20, repsMax:30, muscle:"Cardio", secondary:["Pernas","Glúteos"],   tips:"Postura ereta, use o calcanhar",                 errors:"Não se apoiar no corrimão",                    description:"Subida de escadas + caminhada inclinada — duração em minutos.", isCardio:true},
     ],
   },
 ];
 
 const MUSCLE_GROUPS = {
-  "Costas": ["e1","e2","e3","e4","e11","e12","e13","e16","e17","e20"],
-  "Pernas": ["e6","e7","e8","e9","e10"],
-  "Ombro":  ["e5","e14","e15","e18","e19","e24"],
-  "Cardio": ["e21","e22","e23","ec1","ec2","ec3","ec4"],
+  "Costas":   ["e1","e2","e3","e4","e12","e13","e18","e19"],
+  "Peito":    ["e5","e21","e22"],
+  "Ombro":    ["e6","e14","e16","e17","e20","e24"],
+  "Tríceps":  ["e15","e23"],
+  "Pernas":   ["e7","e8","e9","e10","e11"],
+  "Glúteos":  ["e10"],
+  "Cardio":   ["e25","e26","e27","ec1","ec2","ec3","ec4"],
 };
 
 const PHRASES = [
